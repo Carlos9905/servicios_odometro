@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    
+    <menuitem id="menu_servicios_odometros" 
+    name="Servicios y Odometros" 
+    parent="fleet.fleet_vehicle_menu" 
+    action="action_servicios_odometros" sequence="4"/>
 </odoo>

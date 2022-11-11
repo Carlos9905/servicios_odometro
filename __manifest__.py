@@ -12,7 +12,7 @@
     "depends": ["base", "fleet"],
     "data": [
         "views/menu.xml",
-        "views/fleet_form.xml",
+        "views/fleet_tree.xml",
         "security/ir.model.access.csv",        
     ]
 }

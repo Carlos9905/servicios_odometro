@@ -8,7 +8,7 @@
      """,
     "author": "Carlos Aguilar",
     "category": "Services",
-    "website": "",
+    "website": "https://github.com/Carlos9905",
     "depends": ["base", "fleet"],
     "data": [
         "views/menu.xml",

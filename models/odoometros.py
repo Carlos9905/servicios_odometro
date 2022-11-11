@@ -13,6 +13,7 @@ class Odometros(models.Model):
     tipo_carga = fields.Selection(
         string="Tipo de carga",
         selection=[("combustible", "Combustible"), ("servicio", "Servicio")],
+        default='combustible'
     )
     odo_inicial = fields.Float(string='Odomtro Inicial')
     odo_final = fields.Float(string='Odometro Final')

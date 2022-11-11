@@ -9,24 +9,13 @@
                 <field name="unidad"/>
                 <field name="costo" />
                 <field name="fecha" />
-                <field name="tipo_carga" />
+                <field name="tipo_carga" required="1" widget="selection"/>
                 <field name="odo_inicial" />
                 <field name="odo_final" />
                 <field name="litros" />
                 <field name="km_acumulado" />
                 <field name="ren_optimo" />
             </tree>
-        </field>
-    </record>
-    <record id="action_servicios_odometros" model="ir.actions.act_window">
-        <field name="name">Servicios y Odometros"</field>
-        <field name="type">ir.actions.act_window</field>
-        <field name="res_model">servicios.odometros</field>
-        <field name="view_mode">tree</field>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-                ¡Agrega las skills para tus entrenadores aqui!
-            </p>
         </field>
     </record>
 </odoo>

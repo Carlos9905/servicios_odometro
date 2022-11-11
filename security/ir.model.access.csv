@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_servicios_odometro_servicios_odometros1,servicios_odometros access,model_servicios_odometros,base.group_user,1,1,1,1
+access_km_finales_user,servicios_odometro.km.finales,model_km_finales,base.group_user,1,1,1,1

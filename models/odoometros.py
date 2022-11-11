@@ -48,9 +48,10 @@ class Odometros(models.Model):
     @api.depends("odo_final")
     def _calculo_odoInicial(self):
         for record in self:
-            registros = self.env["km.finales"].search([('tipo', '=', record.tipo_carga)])          
-            lista_km = registros.mapped(lambda f: f.odo_final > 0)
-
+            registros = self.env["km.finales"].search([('tipo', '=', record.tipo_carga)])
+            filtro = registros.filtered(lambda f: f.odo_final > 0) 
+            lista_km = filtro.mapped('odo_final')
+            print(lista_km)
             if len(lista_km) > 1:
                 for i in range(len(lista_km)):
                     record.odo_inicial = lista_km[i - 1]

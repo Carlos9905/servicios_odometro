@@ -13,10 +13,10 @@ class Odometros(models.Model):
     unidad = fields.Many2one("fleet.vehicle", string="Unidad", required=True)
     costo = fields.Float(string="Costo")
     fecha = fields.Date(string="Fecha")
-    tipo_carga = fields.Selection(
+    tipo_carga = fields.Many2one(
         string="Tipo de carga",
-        selection=[("combustible", "Combustible"), ("servicio", "Servicio")],
-        default="combustible",
+        comodel_name="fleet.vehicle.log.services",
+        ondelete="restrict",
     )
     odo_inicial = fields.Float(
         string="Odomtro Inicial", compute="_calculo_odoInicial", store=True
@@ -34,28 +34,30 @@ class Odometros(models.Model):
             ) or ("New")
         return super(Odometros, self).create(vals)
 
-    
     @api.constrains("odo_final")
     def check(self):
         for record in self:
             if record.odo_final <= 0.0:
-                raise ValueError("El Valor del odometro final no puede ser menor ó igual 0")
-                
+                raise ValueError(
+                    "El Valor del odometro final no puede ser menor ó igual 0"
+                )
 
     @api.onchange("odo_final")
     def _registrar(self):
         for record in self:
             if record.odo_final <= 0.0:
-                raise ValidationError("El Valor del odometro final no puede ser menor ó igual 0")
+                raise ValidationError(
+                    "El Valor del odometro final no puede ser menor ó igual 0"
+                )
             else:
                 registros = self.env["km.finales"]
                 registros.create(
-                {
-                    "tipo": record.tipo_carga,
-                    "odo_final": record.odo_final,
-                    "unidad": record.unidad.license_plate,
-                }
-            )
+                    {
+                        "tipo": record.tipo_carga,
+                        "odo_final": record.odo_final,
+                        "unidad": record.unidad.license_plate,
+                    }
+                )
 
     @api.depends("odo_final")
     def _calculo_odoInicial(self):

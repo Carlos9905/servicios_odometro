@@ -25,43 +25,40 @@ class Odometros(models.Model):
     litros = fields.Float(string="Litros")
     km_acumulado = fields.Float(string="Kilomtros acumuladsos")
     ren_optimo = fields.Float(string="Rendimiento Optimo")
-    
+
     @api.model
     def create(self, vals):
-        if vals.get("name", ("New")) == ("New"):
-            vals["name"] = self.env["ir.sequence"].next_by_code(
-                "secuencia.odometros"
-            ) or ("New")
-        return super(Odometros, self).create(vals)
+        recs = super(Odometros, self).create(vals)
 
-    @api.constrains("odo_final")
-    def check(self):
-        for record in self:
-            if record.odo_final <= 0.0:
-                raise ValueError(
-                    "El Valor del odometro final no puede ser menor ó igual 0"
+        """Logica"""
+        for rec in recs:
+
+            if rec.name == "New":
+                rec.name = (
+                    self.env["ir.sequence"].next_by_code("secuencia.odometros") or "New"
                 )
 
-    @api.onchange("odo_final")
-    def _registrar(self):
-        if self.odo_final > 0:
-            for record in self:
-                if record.odo_final <= 0.0:
-                    raise ValidationError(
-                        "El Valor del odometro final no puede ser menor ó igual 0"
-                    )
-                else:
-                    registros = self.env["km.finales"]
-                    registros.create(
-                        {
-                            "tipo": "servicio" if record._tipo_carga else "combustible",
-                            "odo_final": record.odo_final,
-                            "unidad": record.unidad.license_plate,
-                            "servicio": record.name
-                        }
-                    )
-        else:
-            pass
+            if rec.odo_final <= 0:
+                raise ValidationError(
+                    "El Valor del odometro final no puede ser menor ó igual 0"
+                )
+            else:
+                registros = self.env["km.finales"]
+                registros.create(
+                    {
+                        "tipo": "servicio"
+                        if rec._tipo_carga
+                        else "combustible",  # "servicio" if record._tipo_carga else "combustible",
+                        "odo_final": rec.odo_final,  # record.odo_final,
+                        "unidad": rec.unidad.license_plate,  # record.unidad.license_plate,
+                        "servicio": rec.name,  # record.name,
+                    }
+                )
+        ##########################
+        """ Aquí iria otro codigo para crear un servicio """
+
+        """ #################################### """
+        return rec
 
     @api.depends("odo_final")
     def _calculo_odoInicial(self):
@@ -82,14 +79,18 @@ class Odometros(models.Model):
 
     @api.ondelete(at_uninstall=False)
     def delete_record(self):
-        registros = self.env["km.finales"].search([])
-        filtro = registros.filtered(lambda variable: variable.servicio)
-        #mapeo = filtro.mapped("servicio")
         for record in self:
-            if record.name == filtro.servicio:
-                filtro.servicio.unlink()
+            registros = self.env["km.finales"].search([("servicio", "=", record.name)])
+            registros.unlink()
 
-            
+    """
+    #@api.model
+    def write(self, vals):
+        recs = super(Odometros, self).write(vals)
+        for rec in recs:
+            print(rec.name)
+        
+        return recs"""
 
 class KmFinales(models.Model):
     _name = "km.finales"

@@ -15,8 +15,7 @@ class Odometros(models.Model):
     fecha = fields.Date(string="Fecha")
     tipo_carga = fields.Many2one(
         string="Tipo de carga",
-        comodel_name="fleet.vehicle.log.services",
-        ondelete="restrict",
+        comodel_name="fleet.vehicle.log.services"
     )
     odo_inicial = fields.Float(
         string="Odomtro Inicial", compute="_calculo_odoInicial", store=True
@@ -50,14 +49,24 @@ class Odometros(models.Model):
                     "El Valor del odometro final no puede ser menor ó igual 0"
                 )
             else:
-                registros = self.env["km.finales"]
-                registros.create(
-                    {
-                        "tipo": record.tipo_carga,
-                        "odo_final": record.odo_final,
-                        "unidad": record.unidad.license_plate,
-                    }
-                )
+                if record.tipo_carga:
+                    registros = self.env["km.finales"]
+                    registros.create(
+                        {
+                            "tipo": "servicio",
+                            "odo_final": record.odo_final,
+                            "unidad": record.unidad.license_plate,
+                        }
+                    )
+                else:
+                    registros = self.env["km.finales"]
+                    registros.create(
+                        {
+                            "tipo": "combustible",
+                            "odo_final": record.odo_final,
+                            "unidad": record.unidad.license_plate,
+                        }
+                    )
 
     @api.depends("odo_final")
     def _calculo_odoInicial(self):

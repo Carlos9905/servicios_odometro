@@ -9,7 +9,7 @@
                 <field name="unidad"/>
                 <field name="costo" />
                 <field name="fecha" />
-                <field name="tipo_carga" required="1" widget="selection"/>
+                <field name="tipo_carga"/>
                 <field name="odo_inicial" />
                 <field name="odo_final" />
                 <field name="litros" />

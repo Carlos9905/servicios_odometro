@@ -7,9 +7,10 @@
             <tree string="Servicios y Odometros" editable="bottom">
                 <field name="name"/>
                 <field name="unidad"/>
+                <field name="operador" />
                 <field name="costo" />
                 <field name="fecha" />
-                <field name="_tipo_carga"/>
+                <field name="tipo_carga"/>
                 <field name="odo_inicial" />
                 <field name="odo_final" />
                 <field name="litros" />

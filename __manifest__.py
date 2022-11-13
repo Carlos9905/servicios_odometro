@@ -14,6 +14,7 @@
         "views/menu.xml",
         "views/form.xml",
         "views/fleet_tree.xml",
+        "views/fleet.xml",
         "data/secuencia.xml",
         "security/ir.model.access.csv",        
     ]

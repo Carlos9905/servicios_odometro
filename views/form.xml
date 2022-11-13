@@ -7,7 +7,7 @@
             <tree string="Servicios y Odometros" editable="bottom">
                 <field name="tipo" />
                 <field name="odo_final" />
-                <field name="servicio_id" />
+                <field name="servicio" />
             </tree>
         </field>
     </record>

@@ -10,19 +10,27 @@ class Odometros(models.Model):
     name = fields.Char(
         "Numero de operacion", required=True, default="New", readonly=True
     )
-    unidad = fields.Many2one("fleet.vehicle", string="Unidad", required=True, readonly=True)
+    unidad = fields.Many2one(
+        "fleet.vehicle", string="Unidad", required=True, readonly=True
+    )
     costo = fields.Float(string="Costo")
     fecha = fields.Datetime(string="Fecha")
-    tipo_carga = fields.Many2one("fleet.service.type", string="Tipo Carga", readonly=True)
+    tipo_carga = fields.Many2one(
+        "fleet.service.type", string="Tipo Carga", readonly=True
+    )
     odo_inicial = fields.Float(
         string="Odomtro Inicial", compute="_calculo_odoInicial", store=True
     )
     odo_final = fields.Float(string="Odometro Final")
     litros = fields.Float(string="Litros")
-    operador = fields.Many2one("res.partner",string="Operador")
+    operador = fields.Many2one("res.partner", string="Operador")
 
-    km_acumulado = fields.Float(string="Kilomtros acumuladsos", compute="_cal_km_acumulado", store=True)
-    ren_optimo = fields.Float(string="Rendimiento Optimo", compute="_cal_ren_optimo", store=True)
+    km_acumulado = fields.Float(
+        string="Kilomtros acumuladsos", compute="_cal_km_acumulado", store=True
+    )
+    ren_optimo = fields.Float(
+        string="Rendimiento Optimo", compute="_cal_ren_optimo", store=True
+    )
 
     @api.model
     def create(self, vals):
@@ -58,10 +66,20 @@ class Odometros(models.Model):
     def _calculo_odoInicial(self):
         for record in self:
             registros = self.env["km.finales"].search(
-                [("tipo", "=", "servicio" if record.tipo_carga else "combustible")]
+                [
+                    (
+                        "tipo",
+                        "=",
+                        "servicio"
+                        if record.tipo_carga.category != "combustible" #Este era el error
+                        else "combustible",
+                    )
+                ]
             )
             filtro = registros.filtered(
-                lambda f: f.odo_final > 0 and f.unidad == record.unidad.license_plate #Aqui va el numero de unidad
+                lambda f: f.odo_final > 0
+                and f.unidad
+                == record.unidad.license_plate  # Aqui va el numero de unidad
             )
             lista_km = filtro.mapped("odo_final")
             print(lista_km)
@@ -86,7 +104,9 @@ class Odometros(models.Model):
         print(tipo_c)
         registros.write(
             {
-                "odo_final": vals["odo_final"] if "odo_final" in vals else self.odo_final,  # vals["odo_final"],
+                "odo_final": vals["odo_final"]
+                if "odo_final" in vals
+                else self.odo_final,  # vals["odo_final"],
                 "servicio": vals["servicio"] if "servicio" in vals else self.name,
             }
         )
@@ -98,7 +118,7 @@ class Odometros(models.Model):
         for record in self:
             suma = record.odo_final - record.odo_inicial
         self.km_acumulado = suma if suma > 0 else suma * -1
-    
+
     @api.depends("litros", "km_acumulado")
     def _cal_ren_optimo(self):
         suma = 0
@@ -108,6 +128,8 @@ class Odometros(models.Model):
             else:
                 suma = 0
         self.ren_optimo = suma
+
+
 class KmFinales(models.Model):
     _name = "km.finales"
 

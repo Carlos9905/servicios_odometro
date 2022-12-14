@@ -29,11 +29,9 @@
     parent="fleet.fleet_vehicles" 
     action="action_servicios_odometros" sequence="4"/>
 
-    <!-- Este es el submenu-->
-    <!-- 
+    <!-- Este es el submenu-->    
     <menuitem id="menu_km_finales" 
     name="Km Finales" 
     parent="fleet.fleet_vehicles" 
     action="action_km_finales" sequence="5"/>
-    -->
 </odoo>

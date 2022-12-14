@@ -19,7 +19,11 @@ class Odometros(models.Model):
         "fleet.service.type", string="Tipo Carga", readonly=True
     )
     odo_inicial = fields.Float(
-        string="Odomtro Inicial", compute="_calculo_odoInicial", store=True
+        string="Odomtro Inicial",
+        compute="_calculo_odoInicial",
+        inverse="_set_odoInicial",
+        store=True,
+        readonly=True,
     )
     odo_final = fields.Float(string="Odometro Final")
     litros = fields.Float(string="Litros")
@@ -65,13 +69,15 @@ class Odometros(models.Model):
     @api.depends("odo_final")
     def _calculo_odoInicial(self):
         for record in self:
+            #region
             registros = self.env["km.finales"].search(
                 [
                     (
                         "tipo",
                         "=",
                         "servicio"
-                        if record.tipo_carga.category != "combustible" #Este era el error
+                        if record.tipo_carga.category
+                        != "combustible"  # Este era el error
                         else "combustible",
                     )
                 ]
@@ -81,13 +87,16 @@ class Odometros(models.Model):
                 and f.unidad
                 == record.unidad.license_plate  # Aqui va el numero de unidad
             )
-            lista_km = filtro.mapped("odo_final")
-            print(lista_km)
+            lista_km = filtro.mapped("odo_final")            
             if len(lista_km) > 1:
                 for i in range(len(lista_km)):
                     record.odo_inicial = lista_km[i - 1]
             else:
                 record.odo_inicial = record.odo_final
+            #endregion
+
+    def _set_odoInicial(self):
+        pass
 
     @api.ondelete(at_uninstall=False)
     def delete_record(self):
@@ -97,16 +106,13 @@ class Odometros(models.Model):
 
     def write(self, vals):
         # Vals devuelve un diccionario con solo los datos de los campos editados
-        print(vals)
 
         registros = self.env["km.finales"].search([("servicio", "=", self.name)])
-        tipo_c = registros.mapped("tipo")
-        print(tipo_c)
         registros.write(
             {
                 "odo_final": vals["odo_final"]
                 if "odo_final" in vals
-                else self.odo_final,  # vals["odo_final"],
+                else self.odo_final,
                 "servicio": vals["servicio"] if "servicio" in vals else self.name,
             }
         )

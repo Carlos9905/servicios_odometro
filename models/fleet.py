@@ -26,6 +26,7 @@ class Fleet(models.Model):
                 record.litros = record.ser_id.litros
 
     def _set_odometer(self):
+        print("Se ejecuto")
         for record in self:
             if not record.odometer:
                 raise UserError(

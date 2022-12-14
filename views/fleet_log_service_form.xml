@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_fleet_vehicle_log_services_form" model="ir.ui.view">
+        <field name="name">fleet.vehicle.log.services.form</field>
+        <field name="model">fleet.vehicle.log.services</field>
+        <field name="inherit_id" ref="fleet.fleet_vehicle_log_services_view_form"/>
+        <field name="priority">1</field>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='purchaser_id']" position="after">
+                <field name="km_acumulado"/>
+                <label for ="odometro_inicial"/>
+                <div class="o_row">
+                    <field name="odometro_inicial" attrs="{'readonly':[('enable_km_anterior','=',False)]}"/>
+                    <label for="enable_km_anterior"/>
+                    <field name="enable_km_anterior" />
+                </div>
+            </xpath>
+            <xpath expr="//field[@name='purchaser_id']" position="attributes">
+                <attribute name="attrs">{'invisible': 1}</attribute>
+            </xpath>
+            <xpath expr="//field[@name='vehicle_id']" position="after">
+                <field name="conductor"/>
+            </xpath>
+            <xpath expr="//field[@name='description']" position="before">
+                <field name="num_operacion"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

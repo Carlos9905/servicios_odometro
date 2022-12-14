@@ -11,11 +11,9 @@
     "website": "https://github.com/Carlos9905",
     "depends": ["base", "fleet"],
     "data": [
-        "views/menu.xml",
-        "views/form.xml",
-        "views/fleet_tree.xml",
-        "views/fleet.xml",
         "data/secuencia.xml",
-        "security/ir.model.access.csv",        
+        "views/fleet_log_service_form.xml",
+        "views/fleet_log_service_tree.xml",
+        "views/fleet_odometers.xml"
     ]
 }
